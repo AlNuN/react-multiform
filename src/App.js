@@ -4,7 +4,7 @@ import Form from './components/Form';
 import 'fontsource-roboto';
 import { Container, Typography, } from '@material-ui/core';
 
-function App() {
+export default function App() {
   return (
     <Container
       component="article"
@@ -17,9 +17,24 @@ function App() {
       >
         Formulário de Cadastro
       </Typography>
-      <Form />
+      <Form 
+        onSubmitForm={onSubmitForm} 
+        validation={CPFValidation}
+      />
     </Container>
   );
 }
 
-export default App;
+function onSubmitForm(data) {
+  console.log(data);
+}
+
+function CPFValidation(cpf){
+  if(cpf.length !== 11){
+    return {
+            valid: false,
+            text: 'CPF deve ter 11 dígitos',
+          };
+  }
+  return { valid: true, text: '', };
+}
