@@ -1,104 +1,50 @@
-import React, { useState } from 'react';
-import { 
-  Button, TextField, Switch, FormControlLabel
-} from '@material-ui/core';
+import { Step, StepLabel, Stepper, Typography } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import PersonalData from './PersonalData';
+import ShippingData from './ShippingData';
+import UserData from './UserData';
 
 export default function Form({onSubmitForm, validation}) {
-  const [name, setName] = useState('');
-  const [surname, setSurname] = useState('');
-  const [cpf, setCpf] = useState('');
-  const [sales, setSales] = useState(true);
-  const [news, setNews] = useState(true);
-  const [errors, setErrors] = useState({
-    cpf: {
-      valid: true,
-      text: '',
-    },
-  });
+  const [currentPhase, setCurrentPhase] = useState(0);
+  const [data, setCollectedData] = useState({});
+  useEffect(() => {
+    if(currentPhase === forms.length -1 ){
+      console.log(data);
+    }
+  })
 
-  return(
-  <form
-    onSubmit={(e) =>{
-      e.preventDefault();
-      onSubmitForm({name, surname, cpf, sales, news});
-    }}
-  >
-    <TextField 
-      id="nome" 
-      label="Nome" 
-      variant="outlined"
-      fullWidth
-      margin="normal"
-      value={name}
-      onChange={(e) => {
-        setName(e.target.value);
-      }}
-    />
+  const forms = [
+    <UserData
+    onSubmitForm={collectData}
+    />,
+    <PersonalData 
+      onSubmitForm={collectData} 
+      validation={validation}
+    />,
+    <ShippingData 
+       onSubmitForm={collectData}
+    />,
+    <Typography variant="h5">Obrigado pelo Cadastro!</Typography>
+  ];
 
-    <TextField 
-      id="sobrenome"
-      label="Sobrenome"
-      variant="outlined"
-      fullWidth
-      margin="normal"
-      value={surname}
-      onChange={(e) => {
-        setSurname(e.target.value);
-      }}
-    />
+  function collectData(newData){
+    setCollectedData({...data, ...newData});
+    next();
+  }
 
-    <TextField 
-      id="cpf"
-      label="CPF"
-      variant="outlined"
-      fullWidth
-      margin="normal"
-      error={!errors.cpf.valid}
-      helperText={errors.cpf.text}
-      onBlur={(e) => {
-        setErrors({...errors, cpf: validation(e.target.value) });
-      }}
-      value={cpf}
-      onChange={(e) => {
-        setCpf(e.target.value);
-      }}
-    />
+  function next() {
+    setCurrentPhase(currentPhase + 1);
+  }
 
-    <FormControlLabel
-      label="Promoções"
-      control={
-        <Switch
-          name="promoções"
-          color="primary"
-          checked={sales}
-          onChange={(e) => {
-            setSales(e.target.checked);
-          }}
-        />
-      }
-    />
-
-    <FormControlLabel
-      label="Novidades"
-      control={
-        <Switch
-          name="novidades"
-          color="primary"
-          checked={news}
-          onChange={(e) => {
-            setNews(e.target.checked);
-          }}
-        />
-      }
-    />
-
-    <Button 
-      type="submit"
-      variant="contained"
-      color="primary"
-    >
-      Cadastrar
-    </Button>
-  </form>
-  );
+  return (
+  <>
+    <Stepper activeStep={currentPhase}>
+      <Step><StepLabel>Login</StepLabel></Step>
+      <Step><StepLabel>Pessoal</StepLabel></Step>
+      <Step><StepLabel>Entrega</StepLabel></Step>
+      <Step><StepLabel>Finalização</StepLabel></Step>
+    </Stepper>
+    {forms[currentPhase]} 
+  </>
+   );
 }
