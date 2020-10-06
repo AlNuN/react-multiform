@@ -17,24 +17,7 @@ export default function App() {
       >
         Formulário de Cadastro
       </Typography>
-      <Form 
-        onSubmitForm={onSubmitForm} 
-        validation={CPFValidation}
-      />
+      <Form />
     </Container>
   );
-}
-
-function onSubmitForm(data) {
-  console.log(data);
-}
-
-function CPFValidation(cpf){
-  if(cpf.length !== 11){
-    return {
-            valid: false,
-            text: 'CPF deve ter 11 dígitos',
-          };
-  }
-  return { valid: true, text: '', };
 }

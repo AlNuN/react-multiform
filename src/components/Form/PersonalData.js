@@ -1,30 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { 
   Button, TextField, Switch, FormControlLabel
 } from '@material-ui/core';
+import FormValidations from '../../context/FormValidations';
+import useErrors from '../../hooks/useErrors';
 
-export default function PersonalData({onSubmitForm, validation}) {
+export default function PersonalData({onSubmitForm}) {
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [cpf, setCpf] = useState('');
   const [sales, setSales] = useState(true);
   const [news, setNews] = useState(true);
-  const [errors, setErrors] = useState({
-    cpf: {
-      valid: true,
-      text: '',
-    },
-  });
+
+  const validation = useContext(FormValidations);
+  const [errors, validateFields, canSend] = useErrors(validation);
 
   return(
   <form
     onSubmit={(e) =>{
       e.preventDefault();
-      onSubmitForm({name, surname, cpf, sales, news});
+      if(canSend()){
+        onSubmitForm({name, surname, cpf, sales, news});
+      }
     }}
   >
     <TextField 
       id="nome" 
+      name="name"
       label="Nome" 
       variant="outlined"
       fullWidth
@@ -33,10 +35,14 @@ export default function PersonalData({onSubmitForm, validation}) {
       onChange={(e) => {
         setName(e.target.value);
       }}
+      onBlur={validateFields}
+      error={!errors.name.valid}
+      helperText={errors.name.text}
     />
 
     <TextField 
       id="sobrenome"
+      name="sobrenome"
       label="Sobrenome"
       variant="outlined"
       fullWidth
@@ -49,19 +55,18 @@ export default function PersonalData({onSubmitForm, validation}) {
 
     <TextField 
       id="cpf"
+      name="cpf"
       label="CPF"
       variant="outlined"
       fullWidth
       margin="normal"
-      error={!errors.cpf.valid}
-      helperText={errors.cpf.text}
-      onBlur={(e) => {
-        setErrors({...errors, cpf: validation(e.target.value) });
-      }}
       value={cpf}
       onChange={(e) => {
         setCpf(e.target.value);
       }}
+      onBlur={validateFields}
+      error={!errors.cpf.valid}
+      helperText={errors.cpf.text}
     />
 
     <FormControlLabel
@@ -97,7 +102,7 @@ export default function PersonalData({onSubmitForm, validation}) {
       variant="contained"
       color="primary"
     >
-      Cadastrar
+      Próximo
     </Button>
   </form>
   );

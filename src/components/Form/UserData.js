@@ -1,17 +1,25 @@
 import { Button, TextField } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import FormValidations from '../../context/FormValidations';
+import useErrors from '../../hooks/useErrors';
 
 export default function UserData({onSubmitForm}){
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const validation = useContext(FormValidations);
+  const [errors, validateFields, canSend] = useErrors(validation);
+
   return(
     <form onSubmit={(e) => {
       e.preventDefault();
-      onSubmitForm({email, password});
+      if(canSend()){
+        onSubmitForm({email, password});
+      }
     }}>
       <TextField
         id="email"
+        name="email"
         label="Email"
         type="email"
         variant="outlined"
@@ -25,6 +33,7 @@ export default function UserData({onSubmitForm}){
       />
       <TextField
         id="password"
+        name="password"
         label="Password"
         type="password"
         variant="outlined"
@@ -35,13 +44,16 @@ export default function UserData({onSubmitForm}){
         onChange={(e) => {
           setPassword(e.target.value)
         }}
+        onBlur={validateFields}
+        error={!errors.password.valid}
+        helperText={errors.password.text}
       />
       <Button
         type="submit"
         variant="contained"
         color="primary"
       >
-        Cadastrar
+        Próximo
       </Button>
     </form>
   );

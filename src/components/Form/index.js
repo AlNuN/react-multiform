@@ -4,7 +4,7 @@ import PersonalData from './PersonalData';
 import ShippingData from './ShippingData';
 import UserData from './UserData';
 
-export default function Form({onSubmitForm, validation}) {
+export default function Form() {
   const [currentPhase, setCurrentPhase] = useState(0);
   const [data, setCollectedData] = useState({});
   useEffect(() => {
@@ -15,14 +15,13 @@ export default function Form({onSubmitForm, validation}) {
 
   const forms = [
     <UserData
-    onSubmitForm={collectData}
+      onSubmitForm={collectData}
     />,
     <PersonalData 
       onSubmitForm={collectData} 
-      validation={validation}
     />,
     <ShippingData 
-       onSubmitForm={collectData}
+      onSubmitForm={collectData}
     />,
     <Typography variant="h5">Obrigado pelo Cadastro!</Typography>
   ];
@@ -37,14 +36,14 @@ export default function Form({onSubmitForm, validation}) {
   }
 
   return (
-  <>
-    <Stepper activeStep={currentPhase}>
-      <Step><StepLabel>Login</StepLabel></Step>
-      <Step><StepLabel>Pessoal</StepLabel></Step>
-      <Step><StepLabel>Entrega</StepLabel></Step>
-      <Step><StepLabel>Finalização</StepLabel></Step>
-    </Stepper>
-    {forms[currentPhase]} 
-  </>
-   );
+    <>
+      <Stepper activeStep={currentPhase}>
+        <Step><StepLabel>Login</StepLabel></Step>
+        <Step><StepLabel>Pessoal</StepLabel></Step>
+        <Step><StepLabel>Entrega</StepLabel></Step>
+        <Step><StepLabel>Finalização</StepLabel></Step>
+      </Stepper>
+      {forms[currentPhase]} 
+    </>
+  );
 }
